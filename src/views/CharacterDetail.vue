@@ -96,7 +96,7 @@
       axios.get(relatedUrl)
         .then((response) => {
           let relatedResults = response.data.data.results[0].characters.items;
-          for (var i = 0; i < relatedResults.length; i++) {
+          for (let i = 0; i < relatedResults.length; i++) {
             this.relatedChars.push(relatedResults[i]);
             // console.log(relatedResults[i].resourceURI.split('/').pop());
           }
@@ -110,7 +110,7 @@
       axios.get(relatedUrl)
         .then((response) => {
           let seriesResults = response.data.data.results;
-          for (var i = 0; i < seriesResults.length; i++) {
+          for (let i = 0; i < seriesResults.length; i++) {
             this.series.push(seriesResults[i]);
           }
           this.seriesLoading = false;
