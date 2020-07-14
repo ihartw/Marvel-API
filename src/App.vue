@@ -9,7 +9,7 @@
             </router-link>
           </b-col>
           <b-col xs="6">
-            <b-form-input id="input-none" :value="input" @keyup.enter="submitValue" :state="null" placeholder="Search">
+            <b-form-input id="input-none" :value="input" @keyup.enter="searchCharacters" :state="null" placeholder="Search">
             </b-form-input>
           </b-col>
         </b-row>
@@ -30,22 +30,23 @@
       return {
         input: '',
         characters: [],
-        characterExists: true
+        characterExists: true,
       }
     },
     methods: {
-      submitValue: function (event) {
+      searchCharacters: function (event) {
         this.input = event.target.value;
         let search = this.input;
-        const characterUrl = `https://gateway.marvel.com/v1/public/characters${key}&name=${search}&limit=100`;
+        const characterUrl = `https://gateway.marvel.com/v1/public/characters${key}&name=${search}`;
+
         axios.get(characterUrl)
           .then((response) => {
             let results = response.data.data.results;
             this.characters = [];
-            for (let i = 0; i < results.length; i++) {
+            results.forEach((item, i) => {
               this.characters.push(results[i]);
               this.characterExists = true;
-            }
+            });
             if (this.characters.length === 0) {
               this.characterExists = false;
             }

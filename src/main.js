@@ -10,7 +10,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './styles/app.scss'
 
 Vue.use(BootstrapVue)
-Vue.use(md5)
 Vue.config.productionTip = false
 
 new Vue({
