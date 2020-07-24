@@ -37,9 +37,8 @@
       searchCharacters: function (event) {
         this.input = event.target.value;
         let search = this.input;
-        const characterUrl = `https://gateway.marvel.com/v1/public/characters${key}&name=${search}`;
 
-        axios.get(characterUrl)
+        axios.get(`https://gateway.marvel.com/v1/public/characters${key}&name=${search}`)
           .then((response) => {
             let results = response.data.data.results;
             this.characters = [];
@@ -50,7 +49,8 @@
             if (this.characters.length === 0) {
               this.characterExists = false;
             }
-            this.$router.push('/');
+            
+            if (this.$route.path !== `/`) this.$router.push(`/`);
           })
           .catch((error) => {
             console.log(error);

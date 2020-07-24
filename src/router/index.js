@@ -12,7 +12,7 @@ Vue.use(VueRouter)
     component: CharacterList
   },
   {
-    path: '/CharacterDetail',
+    path: '/CharacterDetail/:id',
     name: 'CharacterDetail',
     component: CharacterDetail,
     params: true

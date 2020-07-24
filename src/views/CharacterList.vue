@@ -1,6 +1,6 @@
 <template>
   <div class="characters">
-    <h1 class="m-5 text-center">All Characters</h1>
+    <h1 class="m-5 text-center">Characters</h1>
     <b-container class="text-center">
       <b-spinner style="width: 3rem; height: 3rem;" type="grow" label="Loading..." v-if="loading"></b-spinner>
       <h2 v-show="!characterExists">Character Not Found</h2>
@@ -43,8 +43,7 @@ export default {
   methods: {
     getCharacters: function() {
       this.loading = true;
-      const characterUrl = `https://gateway.marvel.com/v1/public/characters${key}&limit=100`;
-      axios.get(characterUrl)
+      axios.get(`https://gateway.marvel.com/v1/public/characters${key}&limit=100`)
         .then((response) => {
           let results = response.data.data.results;
           this.value = 25;
@@ -56,6 +55,7 @@ export default {
           if (this.characters.length === 0) {
             this.characterExists = false;
           }
+
           console.log(this.characters);
           this.loading = false;
         })
