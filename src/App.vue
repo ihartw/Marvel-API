@@ -42,15 +42,18 @@
           .then((response) => {
             let results = response.data.data.results;
             this.characters = [];
+
             results.forEach((item, i) => {
               this.characters.push(results[i]);
               this.characterExists = true;
             });
+            
             if (this.characters.length === 0) {
               this.characterExists = false;
             }
-            
-            if (this.$route.path !== `/`) this.$router.push(`/`);
+            if (this.$route.path !== `/`) {
+              this.$router.push(`/`);
+            }
           })
           .catch((error) => {
             console.log(error);
