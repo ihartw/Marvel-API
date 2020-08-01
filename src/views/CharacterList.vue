@@ -6,7 +6,7 @@
       <h2 v-show="!characterExists">Character Not Found</h2>
       <b-row cols="1" cols-sm="2" cols-md="4" cols-lg="5">
         <b-col md v-for="character in allCharacters" :key="character.id">
-            <router-link :to="{ name: 'CharacterDetail', params: { id: character.id, title: character.name, description: character.description }}">
+            <router-link :to="{ name: 'CharacterDetail', params: { id: character.id, title: character.name, description: character.description, story: character.story }}">
             <b-card-group deck>
               <b-card>
                 <b-img-lazy :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :alt="`${character.name} Image`" v-bind="mainProps"></b-img-lazy>
@@ -72,7 +72,7 @@ export default {
     &-body {
       padding: 0;
     }
-    
+
     img {
         width: 100%;
     }

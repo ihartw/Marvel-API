@@ -60,43 +60,17 @@
         img_src: '',
         img_size: 'standard_xlarge.jpg',
         character: [],
-        character_name: '',
-        character_desc: '',
-        story: '',
+        characterId: this.$route.params.id,
+        character_name: this.$route.params.title,
+        character_desc: this.$route.params.description,
+        story: this.$route.params.story,
         relatedChars: [],
         series: [],
         imgLoading: false,
         storyLoading: false,
         relatedLoading: false,
         seriesLoading: false,
-        characterId: this.$route.params.id,
         showTop: false
-      }
-    },
-    methods: {
-      getCharacter: async function() {
-        try {
-          const characterData = await axios.get(`https://gateway.marvel.com/v1/public/characters${key}&id=${this.characterId}`);
-          return characterData;
-        } catch(error) {
-          console.log(error);
-        }
-      },
-      getRelated: async function() {
-        try {
-          const relatedData = await axios.get(`http://gateway.marvel.com/v1/public/characters/${this.characterId}/series${key}`);
-          return relatedData;
-        } catch(error) {
-          console.log(error);
-        }
-      },
-      getStory: async function() {
-        try {
-          const storyData = await axios.get(`http://gateway.marvel.com/v1/public/characters/${this.characterId}/stories${key}`);
-          return storyData;
-        } catch(error) {
-          console.log(error);
-        }
       }
     },
     mounted: function () {
@@ -107,9 +81,9 @@
       this.character_desc = this.$route.params.description;
 
       axios.all([
-        this.getCharacter(),
-        this.getRelated(),
-        this.getStory()
+        axios.get(`https://gateway.marvel.com/v1/public/characters${key}&id=${this.characterId}`),
+        axios.get(`http://gateway.marvel.com/v1/public/characters/${this.characterId}/series${key}`),
+        axios.get(`http://gateway.marvel.com/v1/public/characters/${this.characterId}/stories${key}`)
       ])
       .then(axios.spread((characterResponse, relatedResponse, storyResponse) => {
 
@@ -164,7 +138,7 @@
   .hero {
     height: 300px;
     width: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('../assets/images/bg-collage.jpg');
+    background: linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('../assets/images/bg-collage.jpg');
     background-position: center;
     background-size: cover;
     margin: auto;
