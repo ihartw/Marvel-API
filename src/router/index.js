@@ -9,7 +9,8 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'CharacterList',
-    component: CharacterList
+    component: CharacterList,
+    params: true
   },
   {
     path: '/CharacterDetail/:id',
@@ -20,7 +21,8 @@ Vue.use(VueRouter)
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history'
 })
 
 export default router

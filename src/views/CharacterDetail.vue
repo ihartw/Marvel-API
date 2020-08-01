@@ -1,10 +1,17 @@
 <template>
   <div class="details">
+    <b-alert
+      v-model="showTop"
+      class="position-fixed fixed-top m-0 rounded-0"
+      style="z-index: 2000;"
+      variant="warning"
+      dismissible
+    >
+      Oops! something went wrong. Try another character.
+    </b-alert>
     <b-row class="hero">
-      <b-col align-self="end">
-        <b-col lg="4" class="p-4 bg-secondary text-light text-center">
-          <h1>{{ character_name }}</h1>
-        </b-col>
+      <b-col align-self="center">
+        <h1 class="text-center text-white display-3">{{ character_name }}</h1>
       </b-col>
     </b-row>
     <b-container fluid>
@@ -14,7 +21,7 @@
             <b-spinner label="Spinning" v-if="imgLoading"></b-spinner>
             <b-img :src="img_src" rounded="circle" :alt="`Image of ${this.$route.params.title}`"></b-img>
           </b-row>
-          <b-row class="p-5">
+          <b-row class="px-5">
             <h2 class="w-100">Description</h2>
             <p class="w-100">{{ character_desc }}</p>
           </b-row>
@@ -62,7 +69,8 @@
         storyLoading: false,
         relatedLoading: false,
         seriesLoading: false,
-        characterId: this.$route.params.id
+        characterId: this.$route.params.id,
+        showTop: false
       }
     },
     methods: {
@@ -120,7 +128,6 @@
           this.character_desc = this.character[0].description;
         }
         this.character_name = this.character[0].name;
-        console.log(this.character);
 
         // Related response
         for (let i = 0; i < relatedResponse.length; i++) {
@@ -147,6 +154,7 @@
       }))
       .catch((error) => {
         console.log(error);
+        this.showTop = true;
       });
     }
   }
@@ -156,7 +164,7 @@
   .hero {
     height: 300px;
     width: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('../assets/images/bg-collage.jpg');
+    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('../assets/images/bg-collage.jpg');
     background-position: center;
     background-size: cover;
     margin: auto;

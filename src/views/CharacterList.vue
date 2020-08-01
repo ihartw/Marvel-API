@@ -5,8 +5,8 @@
       <b-spinner style="width: 3rem; height: 3rem;" type="grow" label="Loading..." v-if="loading"></b-spinner>
       <h2 v-show="!characterExists">Character Not Found</h2>
       <b-row cols="1" cols-sm="2" cols-md="4" cols-lg="5">
-        <b-col md v-for="character in characters" :key="character.id">
-          <router-link :to="{ name: 'CharacterDetail', params: { id: character.id, title: character.name, description: character.description }}">
+        <b-col md v-for="character in allCharacters" :key="character.id">
+            <router-link :to="{ name: 'CharacterDetail', params: { id: character.id, title: character.name, description: character.description }}">
             <b-card-group deck>
               <b-card>
                 <b-img-lazy :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :alt="`${character.name} Image`" v-bind="mainProps"></b-img-lazy>
@@ -25,13 +25,12 @@
 <script>
 import { key } from '../config.js'
 import axios from 'axios'
+import { mapState } from 'vuex'
 
 export default {
   name: 'CharacterList',
-  props: ['input', 'characters', 'characterExists'],
   data: function() {
     return {
-      loading: false,
       mainProps: {
         center: true,
         fluidGrow: true,
@@ -41,31 +40,19 @@ export default {
     }
   },
   methods: {
-    getCharacters: function() {
-      this.loading = true;
-      axios.get(`https://gateway.marvel.com/v1/public/characters${key}&limit=100`)
-        .then((response) => {
-          let results = response.data.data.results;
-          this.value = 25;
-          results.forEach((item, i) => {
-            this.characters.push(results[i]);
-            this.characterExists = true;
-          });
-
-          if (this.characters.length === 0) {
-            this.characterExists = false;
-          }
-
-          console.log(this.characters);
-          this.loading = false;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    characterInit: function() {
+      this.$store.dispatch('getCharacters');
     }
   },
+  computed: {
+    ...mapState({
+      allCharacters: state => state.allCharacters,
+      loading: state => state.loading,
+      characterExists: state => state.characterExists
+    })
+  },
   created: function() {
-    window.addEventListener('load', this.getCharacters);
+    window.addEventListener('load', this.characterInit);
   }
 }
 </script>
@@ -74,19 +61,20 @@ export default {
   .card-deck {
     transition: ease-in-out 0.1s;
     padding: 0.5rem 0;
-  }
 
-  .card-deck:hover {
-    transform: scale(1.1);
+    &:hover {
+      text-decoration: none;
+      transform: scale(1.1);
+    }
   }
 
   .card {
-    .card-body {
+    &-body {
       padding: 0;
-
-      img {
-          width: 100%;
-      }
+    }
+    
+    img {
+        width: 100%;
     }
   }
 </style>
