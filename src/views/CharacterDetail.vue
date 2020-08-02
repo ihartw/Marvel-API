@@ -82,8 +82,8 @@
 
       axios.all([
         axios.get(`https://gateway.marvel.com/v1/public/characters${key}&id=${this.characterId}`),
-        axios.get(`http://gateway.marvel.com/v1/public/characters/${this.characterId}/series${key}`),
-        axios.get(`http://gateway.marvel.com/v1/public/characters/${this.characterId}/stories${key}`)
+        axios.get(`https://gateway.marvel.com/v1/public/characters/${this.characterId}/series${key}`),
+        axios.get(`https://gateway.marvel.com/v1/public/characters/${this.characterId}/stories${key}`)
       ])
       .then(axios.spread((characterResponse, relatedResponse, storyResponse) => {
 
