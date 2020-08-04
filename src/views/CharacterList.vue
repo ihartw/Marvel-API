@@ -1,17 +1,20 @@
 <template>
-  <div class="characters">
+  <div class="characters" id="characters">
     <h1 class="m-5 text-center">Characters</h1>
+    <b-button href="#characters" class="m-3 fixed-bottom" v-b-tooltip.hover title="Back to Top">
+      <b-icon icon="arrow-up" font-scale="2.5" variant="light"></b-icon>
+    </b-button>
     <b-container class="text-center">
       <b-spinner style="width: 3rem; height: 3rem;" type="grow" label="Loading..." v-if="loading"></b-spinner>
       <h2 v-show="!characterExists">Character Not Found</h2>
       <b-row cols="1" cols-sm="2" cols-md="4" cols-lg="5">
         <b-col md v-for="character in allCharacters" :key="character.id">
-            <router-link :to="{ name: 'CharacterDetail', params: { id: character.id, title: character.name, description: character.description, story: character.story }}">
+            <router-link :to="{ name: 'CharacterDetail', params: { id: character.id, name: character.name }}" :id="`${character.id}`">
             <b-card-group deck>
               <b-card>
                 <b-img-lazy :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :alt="`${character.name} Image`" v-bind="mainProps"></b-img-lazy>
                 <template v-slot:footer>
-                  <small class="text-muted">{{ character.name }}</small>
+                  <small class="text-dark">{{ character.name }}</small>
                 </template>
               </b-card>
             </b-card-group>
@@ -63,7 +66,6 @@ export default {
     padding: 0.5rem 0;
 
     &:hover {
-      text-decoration: none;
       transform: scale(1.1);
     }
   }
@@ -76,5 +78,9 @@ export default {
     img {
         width: 100%;
     }
+  }
+  .fixed-bottom {
+    width: 65px;
+    opacity: .8;
   }
 </style>

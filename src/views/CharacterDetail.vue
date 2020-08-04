@@ -11,15 +11,17 @@
     </b-alert>
     <b-row class="hero">
       <b-col align-self="center">
-        <h1 class="text-center text-white display-3">{{ character_name }}</h1>
+        <div class="text-center">
+          <b-spinner  style="width: 3rem; height: 3rem;" variant="light" type="grow" label="Loading..." v-if="loading"></b-spinner>
+        </div>
+        <h1 class="text-center text-white display-4">{{ character_name }}</h1>
       </b-col>
     </b-row>
     <b-container fluid>
       <b-row>
-        <b-col sm="8">
+        <b-col sm="7">
           <b-row class="p-5">
-            <b-spinner label="Spinning" v-if="imgLoading"></b-spinner>
-            <b-img :src="img_src" rounded="circle" :alt="`Image of ${this.$route.params.title}`"></b-img>
+            <b-img :src="img_src" rounded="circle" :alt="`Image of ${character_name}`"></b-img>
           </b-row>
           <b-row class="px-5">
             <h2 class="w-100">Description</h2>
@@ -27,21 +29,19 @@
           </b-row>
           <b-row class="p-5">
             <h2 class="w-100">Story</h2>
-            <b-spinner label="Spinning" v-if="storyLoading"></b-spinner>
             <p>{{ story }}</p>
           </b-row>
         </b-col>
-        <b-col sm="4" class="related">
-          <b-row class="p-4">
+        <b-col sm="5" class="related">
+          <b-row class="p-5">
             <h2 class="w-100">Related Characters</h2>
-            <b-spinner label="Spinning" v-if="relatedLoading"></b-spinner>
-            <p class="w-100" v-for="relatedChar in relatedChars.slice(0, 4)" :key="relatedChar.id">
-              {{ relatedChar.name }}</p>
+            <a class="w-100" href="" v-for="relatedChar in relatedChars" :key="relatedChar.id" :id="`${relatedChar.id}`" @click="viewCharacter">
+              {{ relatedChar.name }}
+            </a>
           </b-row>
-          <b-row class="p-4">
+          <b-row class="p-5">
             <h2 class="w-100">Series</h2>
-            <b-spinner label="Spinning" v-if="seriesLoading"></b-spinner>
-            <p class="w-100" v-for="serie in series.slice(0, 3)" :key="serie.id">{{ serie.title }}</p>
+            <p class="w-100" v-for="serie in series.slice(0, 8)" :key="serie.id">{{ serie.title }}</p>
           </b-row>
         </b-col>
       </b-row>
@@ -52,93 +52,53 @@
 <script>
   import { key } from '../config.js'
   import axios from 'axios'
+  import { mapState } from 'vuex'
 
   export default {
     name: 'CharacterDetail',
-    data: function () {
+    data: function() {
       return {
-        img_src: '',
-        img_size: 'standard_xlarge.jpg',
-        character: [],
-        characterId: this.$route.params.id,
-        character_name: this.$route.params.title,
-        character_desc: this.$route.params.description,
-        story: this.$route.params.story,
-        relatedChars: [],
-        series: [],
-        imgLoading: false,
-        storyLoading: false,
-        relatedLoading: false,
-        seriesLoading: false,
-        showTop: false
+        link: ''
       }
     },
-    mounted: function () {
-      this.imgLoading = true;
-      this.storyLoading = true;
-      this.relatedLoading = true;
-      this.seriesLoading = true;
-      this.character_desc = this.$route.params.description;
-
-      axios.all([
-        axios.get(`https://gateway.marvel.com/v1/public/characters${key}&id=${this.characterId}`),
-        axios.get(`https://gateway.marvel.com/v1/public/characters/${this.characterId}/series${key}`),
-        axios.get(`https://gateway.marvel.com/v1/public/characters/${this.characterId}/stories${key}`)
-      ])
-      .then(axios.spread((characterResponse, relatedResponse, storyResponse) => {
-
-        characterResponse = characterResponse.data.data.results;
-        relatedResponse = relatedResponse.data.data.results[0].characters.items;
-        storyResponse = storyResponse.data.data.results;
-
-        // Character response
-        characterResponse.forEach(element => {
-          this.character.push(element);
-          this.img_src = `${element.thumbnail.path}/${this.img_size}`
-        });
-        if (this.character_desc === "") {
-          this.character_desc = 'Description Unavailable';
-        } else {
-          this.character_desc = this.character[0].description;
-        }
-        this.character_name = this.character[0].name;
-
-        // Related response
-        for (let i = 0; i < relatedResponse.length; i++) {
-          this.relatedChars.push(relatedResponse[i]);
-          // console.log(relatedResults[i].resourceURI.split('/').pop());
-        }
-
-        // Story response
-        for (let i = 0; i < storyResponse.length; i++) {
-          this.series.push(storyResponse[i]);
-        }
-
-        this.story = storyResponse[0].description;
-        if (this.story === "") {
-          this.story = 'Story Unavilable';
-        }
-
-        // Hide preloaders
-        this.imgLoading = false;
-        this.storyLoading = false;
-        this.relatedLoading = false;
-        this.seriesLoading = false;
-
-      }))
-      .catch((error) => {
-        console.log(error);
-        this.showTop = true;
-      });
+    methods: {
+      viewCharacter: function(event) {
+        event.preventDefault();
+        this.link = event.target.id;
+        this.$store.state.characterId = this.link;
+        this.$store.dispatch('getCharacterDetails', this.$store.state.characterId);
+      }
+    },
+    beforeCreate() {
+      window.scrollTo(0, 0);
+    },
+    computed: {
+      ...mapState({
+        img_src: state => state.img_src,
+        img_size: state => state.img_size,
+        character: state => state.character,
+        characterId: state => state.characterId,
+        loading: state => state.loading,
+        character_desc: state => state.character_desc,
+        character_name: state => state.character_name,
+        story: state => state.story,
+        relatedChars: state => state.relatedChars,
+        series: state => state.series,
+        showTop: state => state.showTop
+      })
+    },
+    mounted() {
+      this.$store.state.characterId = this.$route.params.id;
+      this.$store.dispatch('getCharacterDetails', this.$store.state.characterId);
     }
   }
 </script>
 
 <style scoped lang="scss">
   .hero {
-    height: 300px;
+    height: 350px;
     width: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('../assets/images/bg-collage.jpg');
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../assets/images/bg-collage.jpg');
     background-position: center;
     background-size: cover;
     margin: auto;

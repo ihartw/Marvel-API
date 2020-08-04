@@ -1,4 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0em;
 }
@@ -10,22 +15,8 @@ body {
   color: #2c3e50;
 }
 
-#nav {
-  padding: 0px;
-  background-color: #616161;
-  height: auto;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-  }
-  .logo{
-    width: 200px;
-
-    &:hover {
-      cursor: pointer;
-    }
-  }
+a:hover {
+  text-decoration: none;
 }
 
 h1, h2 {

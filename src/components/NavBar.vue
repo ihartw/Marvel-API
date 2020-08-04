@@ -1,17 +1,8 @@
 <template>
-    <div id="nav">
-      <div class="container">
-        <b-row align-v="center">
-          <b-col xs="6">
-            <img src="../assets/images/marvel.jpg" alt="Marvel Logo" class="logo" @click="goHome">
-          </b-col>
-          <b-col xs="6">
-            <b-form-input id="input-none" :value="input" @keyup.enter="searchCharacters" placeholder="Search">
-            </b-form-input>
-          </b-col>
-        </b-row>
-      </div>
-    </div>
+  <b-navbar toggleable type="dark" variant="dark" id="nav" class="sticky-top">
+    <b-navbar-brand href="#" v-b-tooltip.hover.right title="All Characters"><img src="../assets/images/marvel.jpg" alt="Marvel Logo" @click="goHome" width="150"></b-navbar-brand>
+    <b-form-input class="mr-sm-2 search-bar" :value="input" @keyup.enter="searchCharacters" placeholder="Search"></b-form-input>
+  </b-navbar>
 </template>
 
 <script>
@@ -40,13 +31,25 @@
       },
       searchCharacters: function(event) {
         this.input = event.target.value;
+        this.$router.push("/").catch(()=>{});
         if (this.input !== "") {
           this.$store.dispatch('searchCharacters', this.input);
         } else {
           this.$store.dispatch('getCharacters');
         }
-        this.$router.push("/").catch(()=>{});
       }
     }
   }
 </script>
+
+<style scoped lang="scss">
+  .search-bar {
+    width: 50%;
+  }
+  @media(max-width: 350px) {
+    .navbar-brand, .search-bar {
+      margin: 10px auto;
+    }
+    
+  }
+</style>
