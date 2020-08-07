@@ -6,6 +6,7 @@
     </b-button>
     <b-container class="text-center">
       <b-spinner style="width: 3rem; height: 3rem;" type="grow" label="Loading..." v-if="loading"></b-spinner>
+      <p v-if="loading">Loading characters... This may take a moment</p>
       <h2 v-show="!characterExists">Character Not Found</h2>
       <b-row cols="1" cols-sm="2" cols-md="4" cols-lg="5">
         <b-col md v-for="character in allCharacters" :key="character.id">
