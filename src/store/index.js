@@ -41,7 +41,12 @@ export default new Vuex.Store({
         axios.get(`${state.url}${key}&limit=100&offset=700`),
         axios.get(`${state.url}${key}&limit=100&offset=800`),
         axios.get(`${state.url}${key}&limit=100&offset=900`),
-        axios.get(`${state.url}${key}&limit=100&offset=1000`)
+        axios.get(`${state.url}${key}&limit=100&offset=1000`),
+        axios.get(`${state.url}${key}&limit=100&offset=1100`),
+        axios.get(`${state.url}${key}&limit=100&offset=1200`),
+        axios.get(`${state.url}${key}&limit=100&offset=1300`),
+        axios.get(`${state.url}${key}&limit=100&offset=1400`)
+
       ])
       .then((response) => {
         response.forEach((item, i) => {
