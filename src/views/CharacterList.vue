@@ -1,5 +1,5 @@
 <template>
-  <div class="characters" id="characters">
+  <div class="characters p-5" id="characters">
     <h1 class="m-5 text-center">Characters</h1>
     <b-button href="#characters" class="m-3 fixed-bottom" v-b-tooltip.hover title="Back to Top">
       <b-icon icon="arrow-up" font-scale="2.5" variant="light"></b-icon>
