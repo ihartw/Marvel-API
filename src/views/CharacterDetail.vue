@@ -83,7 +83,8 @@
           const response = await axios.get(`https://gateway.marvel.com/v1/public/characters/${character_id}${key}`);
           this.character = response.data.data.results[0];
           this.img_src = `${this.character.thumbnail.path}/standard_fantastic.${this.character.thumbnail.extension}`;
-          const collection = await axios.get(`${this.character.comics.collectionURI}${key}`);
+          let comic_uri = this.character.comics.collectionURI.replace("http://", "https://");
+          const collection = await axios.get(`${comic_uri}${key}`);
           this.comics = collection.data.data.results ? collection.data.data.results : null;
           this.description = this.character.description ? this.character.description : this.comics[0] ? this.comics[0].description : null;
           this.relatedCharacters = this.comics[0] ? this.comics[0].characters.items : null;
