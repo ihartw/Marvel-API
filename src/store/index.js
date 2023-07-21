@@ -21,7 +21,7 @@ export default new Vuex.Store({
     
       for (const offset of offsetValues) {
         try {
-          const response = await axios.get(`http://gateway.marvel.com/v1/public/characters${key}&limit=100&offset=${offset}`);
+          const response = await axios.get(`https://gateway.marvel.com/v1/public/characters${key}&limit=100&offset=${offset}`);
           const moreCharacters = response.data.data.results;
           combinedCharacters.push(...moreCharacters);
           state.allCharacters = combinedCharacters;

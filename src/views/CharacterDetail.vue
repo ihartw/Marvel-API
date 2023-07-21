@@ -57,7 +57,7 @@
   import axios from 'axios'
 
   export default {
-    
+
     name: 'CharacterDetail',
     data() {
       return {
@@ -80,7 +80,7 @@
       async getCharacterDetails() {
         try {
           let character_id = document.URL.split('/').pop().toString();
-          const response = await axios.get(`http://gateway.marvel.com/v1/public/characters/${character_id}${key}`);
+          const response = await axios.get(`https://gateway.marvel.com/v1/public/characters/${character_id}${key}`);
           this.character = response.data.data.results[0];
           this.img_src = `${this.character.thumbnail.path}/standard_fantastic.${this.character.thumbnail.extension}`;
           const collection = await axios.get(`${this.character.comics.collectionURI}${key}`);
