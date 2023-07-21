@@ -38,7 +38,7 @@
                 </b-col>
               </b-row>
             </b-container>
-            <p class="w-100" v-if="comics.length === 0">Comics unavailable</p>
+            <p class="w-100" v-if="!comics">Comics unavailable</p>
           </b-row>
         </b-col>
       </b-row>
@@ -54,7 +54,7 @@
     name: 'CharacterDetail',
     data() {
       return {
-        character: null,
+        character: {},
         comics: null,
         img_src: "",
         description: null,
