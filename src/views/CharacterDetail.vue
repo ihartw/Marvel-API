@@ -1,47 +1,44 @@
 <template>
-  <div class="details">
-    <b-alert
-      v-model="showTop"
-      class="position-fixed fixed-top m-0 rounded-0"
-      style="z-index: 2000;"
-      variant="warning"
-      dismissible
-    >
-      Oops! something went wrong. Try another character.
-    </b-alert>
+  <div class="details" id="details">
     <b-row class="hero">
-      <b-col align-self="center">
+      <b-col sm="12" align-self="center">
         <div class="text-center">
-          <b-spinner  style="width: 3rem; height: 3rem;" variant="light" type="grow" label="Loading..." v-if="loading"></b-spinner>
+          <b-spinner style="width: 3rem; height: 3rem;" variant="light" type="grow" label="Loading..." v-if="loading"/>
+          <h1 class="text-center text-white display-4" v-if="!loading">{{ character.name }}</h1>
         </div>
-        <h1 class="text-center text-white display-4">{{ character_name }}</h1>
       </b-col>
     </b-row>
     <b-container fluid>
       <b-row>
-        <b-col sm="7">
-          <b-row class="p-5">
-            <b-img :src="img_src" rounded="circle" :alt="`Image of ${character_name}`"></b-img>
+        <b-col sm="4">
+          <b-row class="p-4">
+            <b-img class="w-100" :src="img_src" :alt="`${character.name} Image`"/>
           </b-row>
-          <b-row class="px-5">
-            <h2 class="w-100">Description</h2>
-            <p class="w-100">{{ character_desc }}</p>
-          </b-row>
-          <b-row class="p-5">
-            <h2 class="w-100">Story</h2>
-            <p>{{ story }}</p>
+          <b-row class="px-4">
+            <h2 class="w-100">Backstory</h2>
+            <p class="w-100">{{ description ? description : "Backstory is unavailable" }}</p>
           </b-row>
         </b-col>
-        <b-col sm="5" class="related">
-          <b-row class="p-5">
-            <h2 class="w-100">Related Characters</h2>
-            <a class="w-100" href="" v-for="relatedChar in relatedChars" :key="relatedChar.id" :id="`${relatedChar.id}`" @click="viewCharacter">
-              {{ relatedChar.name }}
-            </a>
-          </b-row>
-          <b-row class="p-5">
-            <h2 class="w-100">Series</h2>
-            <p class="w-100" v-for="serie in series.slice(0, 8)" :key="serie.id">{{ serie.title }}</p>
+        <b-col sm="8" class="related">
+          <b-row class="p-4">
+            <h2 class="w-100">Comics</h2>
+            <b-container v-if="!loading" class="text-center">
+              <b-row cols="1" cols-sm="2" cols-md="4" cols-lg="5">
+                <b-col md v-for="comic in comics" :key="comic.id">
+                  <a :href="comic.urls[0].url" target="_blank">
+                    <b-card-group deck>
+                      <b-card>
+                        <b-img :src="`${comic.thumbnail.path}/standard_fantastic.${comic.thumbnail.extension}`" :alt="`${comic.title} Image`"></b-img>
+                        <template v-slot:footer>
+                          <b-card-text class="text-dark text-truncate width">{{ comic.title }}</b-card-text>
+                        </template>
+                      </b-card>
+                    </b-card-group>
+                  </a>
+                </b-col>
+              </b-row>
+            </b-container>
+            <p class="w-100" v-if="comics.length === 0">Comics unavailable</p>
           </b-row>
         </b-col>
       </b-row>
@@ -50,61 +47,74 @@
 </template>
 
 <script>
-  import { key } from '../config.js'
+  import {key} from '../config.js'
   import axios from 'axios'
-  import { mapState } from 'vuex'
 
   export default {
     name: 'CharacterDetail',
-    data: function() {
+    data() {
       return {
-        link: ''
+        character: null,
+        comics: null,
+        img_src: "",
+        description: null,
+        loading: true
       }
-    },
-    methods: {
-      viewCharacter: function(event) {
-        event.preventDefault();
-        this.link = event.target.id;
-        this.$store.state.characterId = this.link;
-        this.$store.dispatch('getCharacterDetails', this.$store.state.characterId);
-      }
-    },
-    beforeCreate() {
-      window.scrollTo(0, 0);
-    },
-    computed: {
-      ...mapState({
-        img_src: state => state.img_src,
-        img_size: state => state.img_size,
-        character: state => state.character,
-        characterId: state => state.characterId,
-        loading: state => state.loading,
-        character_desc: state => state.character_desc,
-        character_name: state => state.character_name,
-        story: state => state.story,
-        relatedChars: state => state.relatedChars,
-        series: state => state.series,
-        showTop: state => state.showTop
-      })
     },
     mounted() {
-      this.$store.state.characterId = this.$route.params.id;
-      this.$store.dispatch('getCharacterDetails', this.$store.state.characterId);
+      this.getCharacterDetails()
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    },
+    methods: {
+      async getCharacterDetails() {
+        try {
+          let character_id = document.URL.split('/').pop().toString();
+          const response = await axios.get(`http://gateway.marvel.com/v1/public/characters/${character_id}${key}`);
+          this.character = response.data.data.results[0];
+          this.img_src = `${this.character.thumbnail.path}/standard_fantastic.${this.character.thumbnail.extension}`;
+          const collection = await axios.get(`${this.character.comics.collectionURI}${key}`);
+          this.comics = collection.data.data.results;
+          this.description = this.character.description ? this.character.description : this.comics[0].description;
+        } catch (error) {
+          console.log(error);
+        } finally {
+          this.loading = false;
+        }
+      },
     }
   }
 </script>
 
 <style scoped lang="scss">
   .hero {
-    height: 350px;
+    height: 200px;
     width: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../assets/images/bg-collage.jpg');
     background-position: center;
     background-size: cover;
     margin: auto;
   }
-
   .related {
     background-color: lightgrey;
+  }
+  .card-deck {
+    transition: ease-in-out 0.1s;
+    padding: 0.5rem 0;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+  .card {
+    &-body {
+      padding: 0;
+    }
+    img {
+        width: 100%;
+        height: 150px;
+    }
   }
 </style>
