@@ -7,7 +7,7 @@
             <router-link :to="{ name: 'CharacterDetail', params: { id: character.id }}" :id="character.id">
             <b-card-group deck>
               <b-card>
-                <b-img-lazy :src="`${character.thumbnail.path}/standard_large.${character.thumbnail.extension}`" :alt="`${character.name} Image`"></b-img-lazy>
+                <b-img-lazy :src="`${character.thumbnail.path}/standard_large.${character.thumbnail.extension}`"/>
                 <template v-slot:footer>
                   <b-card-text class="text-dark text-truncate width">{{ character.name }}</b-card-text>
                 </template>
