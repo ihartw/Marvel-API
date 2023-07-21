@@ -10,13 +10,19 @@
     </b-row>
     <b-container fluid>
       <b-row>
-        <b-col sm="4">
+        <b-col sm="4" class="mb-5">
           <b-row class="p-4">
-            <b-img class="w-100" :src="img_src" :alt="`${character.name} Image`"/>
+            <b-img class="w-100" :src="img_src"/>
           </b-row>
           <b-row class="px-4">
             <h2 class="w-100">Backstory</h2>
             <p class="w-100">{{ description ? description : "Backstory is unavailable" }}</p>
+          </b-row>
+          <b-row class="px-4 mb-5">
+            <h2 class="w-100">Related Characters</h2>
+            <div class="w-100" v-for="character in relatedCharacters" :key="character.id">
+              <b-link @click="viewCharacter(character.resourceURI)">{{character.name}}</b-link>
+            </div>
           </b-row>
         </b-col>
         <b-col sm="8" class="related">
@@ -28,7 +34,7 @@
                   <a :href="comic.urls[0].url" target="_blank">
                     <b-card-group deck>
                       <b-card>
-                        <b-img :src="`${comic.thumbnail.path}/standard_fantastic.${comic.thumbnail.extension}`" :alt="`${comic.title} Image`"></b-img>
+                        <b-img-lazy :src="`${comic.thumbnail.path}/standard_fantastic.${comic.thumbnail.extension}`" :alt="`${comic.title} Image`"></b-img-lazy>
                         <template v-slot:footer>
                           <b-card-text class="text-dark text-truncate width">{{ comic.title }}</b-card-text>
                         </template>
@@ -38,7 +44,7 @@
                 </b-col>
               </b-row>
             </b-container>
-            <p class="w-100" v-if="!comics">Comics unavailable</p>
+            <p class="w-100" v-if="!comics && !loading">Comics unavailable</p>
           </b-row>
         </b-col>
       </b-row>
@@ -58,6 +64,7 @@
         comics: null,
         img_src: "",
         description: null,
+        relatedCharacters: null,
         loading: true
       }
     },
@@ -76,14 +83,19 @@
           this.character = response.data.data.results[0];
           this.img_src = `${this.character.thumbnail.path}/standard_fantastic.${this.character.thumbnail.extension}`;
           const collection = await axios.get(`${this.character.comics.collectionURI}${key}`);
-          this.comics = collection.data.data.results;
-          this.description = this.character.description ? this.character.description : this.comics[0].description;
+          this.comics = collection.data.data.results ? collection.data.data.results : null;
+          this.description = this.character.description ? this.character.description : this.comics[0] ? this.comics[0].description : null;
+          this.relatedCharacters = this.comics[0] ? this.comics[0].characters.items : null;
         } catch (error) {
           console.log(error);
         } finally {
           this.loading = false;
         }
       },
+      viewCharacter(resourceURI) {
+        let character_id = resourceURI.split('/').pop().toString();
+        this.$router.push({ name: 'CharacterDetail', params: { id: character_id }});
+      }
     }
   }
 </script>
@@ -98,7 +110,7 @@
     margin: auto;
   }
   .related {
-    background-color: lightgrey;
+    background-color: rgba(0, 0, 0, 0.05);
   }
   .card-deck {
     transition: ease-in-out 0.1s;

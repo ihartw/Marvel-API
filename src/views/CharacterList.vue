@@ -1,10 +1,10 @@
 <template>
-  <div class="characters p-5" id="characters">
+  <div class="characters p-4" id="characters">
     <h1 class="m-3 text-center">Characters</h1>
     <b-container class="text-center">
       <b-row cols="1" cols-sm="2" cols-md="4" cols-lg="5">
         <b-col md v-for="character in searchCharacters" :key="character.id">
-            <router-link :to="{ name: 'CharacterDetail', params: { id: character.id, name: character.name, character: character }}" :id="character.id">
+            <router-link :to="{ name: 'CharacterDetail', params: { id: character.id }}" :id="character.id">
             <b-card-group deck>
               <b-card>
                 <b-img-lazy :src="`${character.thumbnail.path}/standard_large.${character.thumbnail.extension}`" :alt="`${character.name} Image`"></b-img-lazy>
@@ -39,6 +39,7 @@ export default {
   .card-deck {
     transition: ease-in-out 0.1s;
     padding: 0.5rem 0;
+    border-radius: 8px;
 
     &:hover {
       transform: scale(1.1);

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav-bar></nav-bar>
-    <router-view/>
+    <router-view :key="$route.path"/>
   </div>
 </template>
 
@@ -16,10 +16,5 @@
     mounted() {
       this.$store.dispatch('getCharacters');
     },
-    data: function () {
-      return {
-
-      }
-    }
   }
 </script>
