@@ -34,7 +34,7 @@
                   <a :href="comic.urls[0].url" target="_blank">
                     <b-card-group deck>
                       <b-card>
-                        <b-img-lazy :src="`${comic.thumbnail.path}/standard_fantastic.${comic.thumbnail.extension}`" :alt="`${comic.title} Image`"></b-img-lazy>
+                        <b-img-lazy :src="`${comic.thumbnail.path}/standard_fantastic.${comic.thumbnail.extension}`"/>
                         <template v-slot:footer>
                           <b-card-text class="text-dark text-truncate width">{{ comic.title }}</b-card-text>
                         </template>
